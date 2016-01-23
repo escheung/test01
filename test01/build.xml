@@ -10,7 +10,7 @@
     <property name="source" value="1.7"/>
     <path id="test01.classpath">
         <pathelement location="bin"/>
-        <pathelement location="../../apache-opennlp-1.6.0/lib/opennlp-tools-1.6.0.jar"/>
+        <pathelement location="../../../apache-opennlp-1.6.0/lib/opennlp-tools-1.6.0.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
@@ -35,6 +35,19 @@
         </javac>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
     <target name="Start">
         <java classname="test01.Start" failonerror="true" fork="yes">
             <classpath refid="test01.classpath"/>
